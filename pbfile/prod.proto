@@ -1,0 +1,36 @@
+// 这个就是protobuf的中间文件
+
+// 指定的当前proto语法的版本，有2和3
+syntax = "proto3";
+import "user.proto";
+import "google/protobuf/any.proto";
+option go_package="../service";
+
+// 指定等会文件生成出来的package
+package service;
+
+// 定义request model
+message ProductRequest{
+  int32 prod_id = 1; // 1代表顺序
+}
+message content{
+  string msg = 1;
+}
+// 定义response model
+message ProductResponse{
+  int32 prod_stock = 1;
+  User user = 2;
+  google.protobuf.Any data = 3;
+}
+
+// 定义服务主体
+service ProdService{
+  // 定义方法
+  rpc GetProductStock(ProductRequest) returns(ProductResponse);
+  //客户端流
+  rpc UpdateStockClientStream(stream ProductRequest) returns(ProductResponse);
+  //服务端流
+  rpc GetProductStockServerStream(ProductRequest) returns(stream ProductResponse);
+  //双向流,心跳检测
+  rpc SayHelloStream(stream ProductRequest) returns(stream ProductResponse);
+}
